@@ -15,10 +15,10 @@ struct strand {
 const strand Strands[NUM_STRANDS] = {
 // unintuitively the end number is one past the last pixel in the strand
 //  {0,100,1,10,11},
-    {99,0,-1,4,5},  // left side of house
-    {200,299,1,6,7}, // porch up left down right
-    {100,199,1,8,9}, // right side of house
-    {300,349,1,10,11} // spare
+    {99,0,-1,8,9},  // left side of house (red)(green)
+    {200,299,1,10,11}, // porch up left down right (green)(red)
+    {100,199,1,6,7}, // right side of house (blue)(blue)
+    {300,349,1,4,5} // spare
 };
 
 volatile int state = 0;
@@ -61,6 +61,7 @@ void TrigRainbow(int left, int right);
 void ValRainbow(int left, int right);
 void CandyCane(int left, int right);
 void Scott(int left, int right);
+void Siren(int left, int right);
 void MidScroll(int left, int right, int mid);
 
 void clear(int left, int right, long color) {
@@ -125,61 +126,75 @@ int Timer(int duration) {
   }
 }
 void loop() {
+  int static i=0;
   
-  clear(0,349, BLACK);
-//  Scott();
-//  clear(300,349,0x10);
-//  show();
-//  for (int x=0; x < 25; x++) {
-//    clear(300,349,0x080000);
-//    show_one(3);
-//    clear(300,349,0x000800);
-//    show_one(3);
-//  };
-  Timer(15000);
+//  Timer(15000);
+//  while(Timer(0)) {
+//    clear(0,99,RED);
+//    clear(100,199,GREEN);
+//    clear(200,299,BLUE);
+//    clear(300,349,BLACK);
+//    show();
+//  } 
+  Timer(10000);
+  clear (0,349,BLACK);
   while(Timer(0)) {
-    Owen(0,199);
-    Fill(200,249,-8,GOLD,SILVER);
-    FillB(250,299,-8,GOLD,SILVER);
-    Twinkle(300,349);
-    show();
-  } 
-  Timer(17000);
-  while(Timer(0)) {
-    Fill(200,249,-8,RED,GREEN);
-    FillB(250,299,-8,RED,GREEN);
-    Twinkle(0,199);
-    TrigRainbow(300,349);
+    Twinkle(0,299);
     show();
   };
-  Timer(17000);
+  Timer(5000);
   while(Timer(0)) {
-    Fill(200,249,8,RED,GREEN);
-    FillB(250,299,-8,RED,GREEN);
-    ValRainbow(0,199);
-    TrigRainbow(300,349);
+    Twinkle(0,199);
+    ValRainbow(200,299);
     show();
   }
   Timer(17000);
   while(Timer(0)) {
-    ValRainbow(0,199);
-    CandyCane(200,299);
+    TrigRainbow(0,199);
+    ValRainbow(200,299);
     show();
+    delay(30);
+  }
+  Timer(5000);
+  while(Timer(0)) {
+    ValRainbow(0,199);
+    TrigRainbow(200,299);
+    show();
+    delay(30);
   };
   Timer(17000);
-//  clear(0,199,BLACK);
   while (Timer(0)) {
-    TrigRainbow(0,199);
-    CandyCane(200,299);
+    CandyCane(0,299);
+    show();
+  };
+  Timer(5000);
+  while (Timer(0)) {
+    CandyCane(0,199);
+    Twinkle(200,299);
+    show();
+  };
+  Timer(10000);
+  while (Timer(0)) {
+    Twinkle(0,299);
     show();
   };
   clear(0,299,BLACK);
   Timer(17000);
   Scott(0,199);
   clear(200,299,DIM_BLUE);
+  clear(300,349,BLACK);
   while (Timer(0)) {
     show();
   };
+  if (i%100 == 0) {
+  Timer(10000);
+  while(Timer(0)) {
+      Siren(0,299);
+      show();
+      delay(200);
+  };
+  };
+  i++;
 
 }
 void Owen(int left, int right) {
@@ -341,9 +356,9 @@ void CandyCane(int left, int right) {
     
 // Siren is flashing blue and red. Not very interesting.
 void Siren(int left, int right) {
-  int spacing = 3;
+  int spacing =20;
   int d;
-  int b = 32;
+  int b = 64;
   int static cycle = 0;
   for (int i = left; i <= right; i++) {
     d = (i / spacing) + cycle;
@@ -353,8 +368,8 @@ void Siren(int left, int right) {
       Display[i].c.green = 0;
     } else {
       Display[i].c.blue = b;
-      Display[i].c.red = b;
-      Display[i].c.green = b;
+      Display[i].c.red = 0;
+      Display[i].c.green = 0;
     };
   };
   cycle = cycle ^ 1;
@@ -456,9 +471,6 @@ void TrigRainbow(int left, int right) {
   } else if (i < 1) {
     s = STEP;
   }
-//  if (((int)i%z) == 0) {
-//    clear(midpoint-4,midpoint+4,BLACK);
-//  }
 }
 
 void Scroll() {

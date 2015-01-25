@@ -44,8 +44,8 @@
 TARGET = $(notdir $(CURDIR))
 OBJDIR = $(CURDIR)/applet
 # Change this to match your arduino installation directory
-INSTALL_DIR = $(HOME)/Downloads/Arduino_v1.0.app/Contents/Resources/Java
-PORT = /dev/cu.usbmodemfd1131
+INSTALL_DIR = $(HOME)/Downloads/Arduino.app/Contents/Resources/Java
+PORT = /dev/cu.usbmodem1421
 UPLOAD_RATE = 115200
 AVRDUDE_PROGRAMMER = arduino
 MCU = atmega328p
